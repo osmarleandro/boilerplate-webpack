@@ -1,7 +1,7 @@
 {
-  "name": "roucketseat-es6",
+  "name": "es6-babel-test",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "bundle.js",
   "author": "Osmar Leandro",
   "license": "MIT",
   "dependencies": {
@@ -10,6 +10,6 @@
     "@babel/preset-env": "^7.0.0"
   },
   "scripts": {
-    "dev": "babel ./main.js -o ./bundle.js"
+    "dev": "babel ./main.js -o ./bundle.js -m"
   }
 }
