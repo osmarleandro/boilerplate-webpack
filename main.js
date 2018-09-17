@@ -1,3 +1,5 @@
+"use strict";
+
 class List {
   constructor() {
     this.data = [];
@@ -25,6 +27,6 @@ const mylist = new TodoList();
 
 document.getElementById('newtodo').onclick = () => {
   mylist.add('New Todo');
-}
+};
 
 console.log(mylist.getUser());
