@@ -1,5 +1,9 @@
 "use strict";
 
+import {
+  sum
+} from './functions';
+
 class List {
   constructor() {
     this.data = [];
@@ -30,3 +34,4 @@ document.getElementById('newtodo').onclick = () => {
 };
 
 console.log(mylist.getUser());
+console.log(sum(1, 2));
