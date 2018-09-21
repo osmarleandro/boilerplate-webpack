@@ -3,35 +3,17 @@
 import {
   sum
 } from './functions';
+console.log(`The sum is ${sum(1, 2)}`);
 
-class List {
-  constructor() {
-    this.data = [];
-  }
+const thePromise = () => new Promise((resolve, reject) => {
+  setTimeout(() => resolve('OK'), 2000);
+});
 
-  add(item) {
-    this.data.push(item);
-    console.log(this.data);
-  }
+async function executePromise() {
+  console.log(await thePromise());
+  console.log(await thePromise());
+  console.log(await thePromise());
+  console.log(await thePromise());
 }
 
-class TodoList extends List {
-  constructor() {
-    super();
-    this.user = 'olds';
-  }
-
-  getUser() {
-    return this.user;
-  }
-
-}
-
-const mylist = new TodoList();
-
-document.getElementById('newtodo').onclick = () => {
-  mylist.add('New Todo');
-};
-
-console.log(mylist.getUser());
-console.log(sum(1, 2));
+executePromise();
