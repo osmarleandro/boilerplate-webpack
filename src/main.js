@@ -1,38 +1,82 @@
 "use strict";
+import api from './api';
 
-import sum from './functions';
-console.log(`The sum is ${sum(1, 2)}`);
+class App {
+  constructor() {
+    this.repositories = [];
+    this.formEl = document.getElementById('repo-form');
+    this.listEl = document.getElementById('repo-list');
+    this.inputEl = document.querySelector('input[name=repository]');
+    this.registerHandlers();
+  }
 
+  registerHandlers() {
+    this.formEl.onsubmit = event => this.addRepository(event);
+  }
 
-/***
- * Async await example
- */
-const thePromise = () => new Promise((resolve, reject) => {
-  setTimeout(() => resolve('OK'), 2000);
-});
+  setLoading(loading = true){
+    if(loading){
+      let loadingEl = document.createElement('span');
+      loadingEl.appendChild(document.createTextNode('Loading...'));
+      loadingEl.setAttribute('id', 'loading');
 
-async function executePromise() {
-  console.log(await thePromise());
-  console.log(await thePromise());
-  console.log(await thePromise());
-  console.log(await thePromise());
-}
-executePromise();
+      this.formEl.appendChild(loadingEl);
+    } 
+    else 
+      document.getElementById('loading').remove();
+  }
 
-/**
- * Axios example
- */
-import axios from 'axios';
-class ServiceApi {
-  static async getGithubUser(username) {
-    return await axios.get(`https://api.github.com/users/${username}`);
+  async addRepository(event) {
+    event.preventDefault();
+
+    this.setLoading();
+
+    try{
+
+      const repoInput = this.inputEl.value;
+      if (repoInput.length === 0) return;
+      
+      const response = await api.get(`/repos/${repoInput}`);
+      const { name, description, html_url, owner: { avatar_url } } = response.data;
+      
+      this.repositories.push({ name, description, avatar_url, html_url });
+      this.render();
+      this.inputEl.value = '';
+
+    } catch(err){
+      alert("Repositório não encontrado!");
+    } finally {
+      this.setLoading(false);
+    }
+  }
+
+  render() {
+    this.listEl.innerHTML = '';
+    this.repositories.forEach(repo => {
+      let imgEl = document.createElement('img');
+      imgEl.setAttribute('src', repo.avatar_url);
+
+      let strongEl = document.createElement('strong');
+      strongEl.appendChild(document.createTextNode(repo.name));
+
+      let descriptionEl = document.createElement('p');
+      descriptionEl.appendChild(document.createTextNode(repo.description));
+
+      let linkEl = document.createElement('a');
+      linkEl.setAttribute('target', '_blank');
+      linkEl.setAttribute('href', repo.html_url);
+      linkEl.appendChild(document.createTextNode('Access'));
+
+      let listItemEl = document.createElement('li');
+      listItemEl.appendChild(imgEl);
+      listItemEl.appendChild(strongEl);
+      listItemEl.appendChild(descriptionEl);
+      listItemEl.appendChild(linkEl);
+
+      this.listEl.appendChild(listItemEl);
+
+    });
   }
 }
 
-ServiceApi.getGithubUser('osmarleandro')
-  .then(response =>
-    console.log(response)
-  )
-  .catch(error =>
-    console.error(error)
-  )
+new App();
